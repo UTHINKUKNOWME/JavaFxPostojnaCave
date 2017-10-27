@@ -112,19 +112,19 @@ public class Controller implements Initializable{
                         if (printWriter != null)
                             printWriter.close();
                     } catch (Exception e) {
-                        //exception handling left as an exercise for the reader
+                        //exception handling
                     }
                     try {
                         if (bw != null)
                             bw.close();
                     } catch (IOException e) {
-                        //exception handling left as an exercise for the reader
+                        //exception handling
                     }
                     try {
                         if (fw != null)
                             fw.close();
                     } catch (IOException e) {
-                        //exception handling left as an exercise for the reader
+                        //exception handling
                     }
                 }
 
@@ -226,7 +226,7 @@ public class Controller implements Initializable{
                                                 howManyUntilBreak++;
 //                                            Write done on every source pic
                                                 File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
-//                            Write done on every pic
+//                                            Write done on every pic
                                                 if (listOfFiles[i].getName().endsWith(".jpg")) {
                                                     newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
                                                 }
@@ -545,7 +545,6 @@ public class Controller implements Initializable{
         int maxFiles;
         String dest;
         String pix;
-        String temp = mainpath + "temp";
 
         checkForNewPicsTimer(File f, String dest, int maxFiles, String pix) {
             srcFolder = f;
@@ -559,6 +558,8 @@ public class Controller implements Initializable{
             checkForNewPic(srcFolder, dest, maxFiles, pix);
         }
     }
+
+//    Timers
 
     public static class checkForNewPicsFirstTimer extends TimerTask {
 
@@ -574,7 +575,6 @@ public class Controller implements Initializable{
         }
 
         public void run() {
-//            File folder = new File("../sliki");
             checkForNewPicFirst(srcFolder, dest, maxFiles);
 
         }
@@ -590,6 +590,7 @@ public class Controller implements Initializable{
         }
     }
 
+    //------------------------------------------------------------------------------------
 
     @FXML
     private ComboBox<Integer>  intervalChooser;
@@ -609,6 +610,8 @@ public class Controller implements Initializable{
     @FXML
     private Label statusLabel;
 
+//    Initialize the variable settings
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         intervalChooser.getItems().addAll(15, 20, 30, 50, 60);
@@ -619,11 +622,15 @@ public class Controller implements Initializable{
         formatChooser.getSelectionModel().selectFirst();
     }
 
+//   Handle File > Exit application
+
     @FXML
     public void exitApplication(ActionEvent event) {
         Platform.exit();
 
     }
+
+//    Method to show the dialog window for About
 
     public void showAbout(){
         Stage about = new Stage();
@@ -647,6 +654,8 @@ public class Controller implements Initializable{
         about.show();
     }
 
+//    Method to start the program
+
     public void startTheProgram(){
         System.out.println("Program is started ...");
         System.out.println("Interval : " + intervalChooser.getValue());
@@ -666,6 +675,8 @@ public class Controller implements Initializable{
         sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), formatChooser.getValue()), 0, intervalChooser.getValue() * 1000);
 
     }
+//    Browse button to choose source directory
+
 
     public void browseSource(){
         System.out.println("Choosing source folder ...");
@@ -686,6 +697,8 @@ public class Controller implements Initializable{
 
 
     }
+
+//    Browse button to choose destination directory
 
     public void browseDestination(){
         System.out.println("Choosing destination folder ...");
