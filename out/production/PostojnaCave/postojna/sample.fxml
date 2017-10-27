@@ -62,7 +62,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="pixelChooser" prefHeight="25.0" prefWidth="75.0" promptText="13x18" />
+                  <ComboBox fx:id="formatChooser" prefHeight="25.0" prefWidth="75.0" promptText="13x18" />
                </children>
             </HBox>
          </children>
