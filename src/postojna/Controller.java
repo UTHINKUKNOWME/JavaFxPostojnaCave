@@ -2,15 +2,19 @@ package postojna;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,7 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Controller implements Initializable{
+public class Controller implements Initializable {
 
     File destinationFolder;
     File sourceFolder;
@@ -32,7 +36,7 @@ public class Controller implements Initializable{
     final static String mainpath = "C:\\Users\\Antonio\\Desktop\\";
 
 
-//    Copy file from @source to @dest
+    //    Copy file from @source to @dest
 //
     private static void copyFileUsingStream(File source, File dest) throws IOException {
         try (InputStream is = new FileInputStream(source); OutputStream os = new FileOutputStream(dest)) {
@@ -44,7 +48,7 @@ public class Controller implements Initializable{
         }
     }
 
-//    Create files condition.txt and end.txt for the printing machine
+    //    Create files condition.txt and end.txt for the printing machine
 //
     private static void createPrintConditions(File f, String pix) {
 
@@ -133,7 +137,7 @@ public class Controller implements Initializable{
         }
     }
 
-//    Check on  preset interval  if there are @max files allready in @srcFile to
+    //    Check on  preset interval  if there are @max files allready in @srcFile to
 //    move then into the @destFile, using the @pix to determine the format which will be
 //    used in the .txt files required for the printing machine
 //
@@ -349,7 +353,7 @@ public class Controller implements Initializable{
 
     }
 
-//    Helper function to check if we reached the @max limit of DONE pictures in the folder
+    //    Helper function to check if we reached the @max limit of DONE pictures in the folder
 //
     private static boolean checkIfThereAreMaxNew(File[] folder, int max) {
         boolean out = false;
@@ -365,7 +369,7 @@ public class Controller implements Initializable{
         return counter >= max;
     }
 
-//    Checks for new pictures which will be then formatted in a folder of @max pictures,
+    //    Checks for new pictures which will be then formatted in a folder of @max pictures,
 //    and then calls OBDELAJ.exe on the folders on every 10 sec
 //
     private static void checkForNewPicFirst(File srcFile, String destFile, int max) {
@@ -515,7 +519,7 @@ public class Controller implements Initializable{
 
     }
 
-//    Helper function to handle the temporary folder /temp
+    //    Helper function to handle the temporary folder /temp
 //    to not go over 10 folders at a time.
 //    The function is used in a TimerTask on a preset interval
 //
@@ -539,6 +543,8 @@ public class Controller implements Initializable{
         }
     }
 
+    //    Timers
+
     public static class checkForNewPicsTimer extends TimerTask {
 
         File srcFolder;
@@ -559,7 +565,6 @@ public class Controller implements Initializable{
         }
     }
 
-//    Timers
 
     public static class checkForNewPicsFirstTimer extends TimerTask {
 
@@ -593,7 +598,7 @@ public class Controller implements Initializable{
     //------------------------------------------------------------------------------------
 
     @FXML
-    private ComboBox<Integer>  intervalChooser;
+    private ComboBox<Integer> intervalChooser;
 
     @FXML
     private ComboBox<Integer> maxFilesChooser;
@@ -632,7 +637,7 @@ public class Controller implements Initializable{
 
 //    Method to show the dialog window for About
 
-    public void showAbout(){
+    public void showAbout() {
         Stage about = new Stage();
         final GridPane inputGridPane = new GridPane();
 
@@ -650,35 +655,15 @@ public class Controller implements Initializable{
         rootGroup.getChildren().addAll(inputGridPane);
         rootGroup.setPadding(new Insets(12, 12, 12, 12));
         about.setTitle("About");
+        about.getIcons().add(new Image("file:icona.png"));
         about.setScene(new Scene(rootGroup));
         about.show();
     }
 
-//    Method to start the program
-
-    public void startTheProgram(){
-        System.out.println("Program is started ...");
-        System.out.println("Interval : " + intervalChooser.getValue());
-        System.out.println("Max files in folder: " + maxFilesChooser.getValue());
-        System.out.println("Format :" + formatChooser.getValue());
-        statusLabel.setText("Running...");
-
-        String temp = "temp";
-        String output = "OUTPUT FOLDER DROP";
-
-        Timer photoshopTimer = new Timer();
-        Timer sortFilesIntoDestFolderTImer = new Timer();
-
-        photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()),mainpath + temp,10), 0,15000);
-        photoshopTimer.schedule(new emptyTempFolderTimer(), 0, 15000);
-
-        sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), formatChooser.getValue()), 0, intervalChooser.getValue() * 1000);
-
-    }
-//    Browse button to choose source directory
+    //    Browse button to choose source directory
 
 
-    public void browseSource(){
+    public void browseSource() {
         System.out.println("Choosing source folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose the source folder");
@@ -691,7 +676,7 @@ public class Controller implements Initializable{
         try {
             sourceLabel.setText(sourceFolder.getCanonicalPath());
             System.out.println(sourceFolder.getCanonicalPath());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 
@@ -700,7 +685,7 @@ public class Controller implements Initializable{
 
 //    Browse button to choose destination directory
 
-    public void browseDestination(){
+  public void browseDestination() {
         System.out.println("Choosing destination folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose the destination folder");
@@ -712,8 +697,55 @@ public class Controller implements Initializable{
         try {
             destLabel.setText(destinationFolder.getCanonicalPath());
             System.out.println(destinationFolder.getCanonicalPath());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
+
+//    Method to start the program
+
+    public void startTheProgram() {
+        System.out.println("Program is started ...");
+        System.out.println("Interval : " + intervalChooser.getValue());
+        System.out.println("Max files in folder: " + maxFilesChooser.getValue());
+        System.out.println("Format :" + formatChooser.getValue());
+        statusLabel.setText("Running...");
+
+        String temp = "temp";
+        String output = "OUTPUT FOLDER DROP";
+
+        Timer photoshopTimer = new Timer();
+        Timer sortFilesIntoDestFolderTImer = new Timer();
+
+
+        if (!destLabel.getText().equals("Choose destination folder") && !sourceLabel.getText().equals("Choose source folder")) {
+            photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()), mainpath + temp, 10), 0, 15000);
+            photoshopTimer.schedule(new emptyTempFolderTimer(), 0, 15000);
+
+            sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), formatChooser.getValue()), 0, intervalChooser.getValue() * 1000);
+        } else {
+//            System.out.println("Somethings is null");
+            statusLabel.setText("Stopped");
+            Stage errorStage = new Stage();
+            final GridPane inputGridPane = new GridPane();
+
+            Label error = new Label("Please make sure u choose both source and destination folders!");
+            error.setFont(new Font("Arial", 18));
+
+            GridPane.setConstraints(error, 0, 0);
+            inputGridPane.setHgap(6);
+            inputGridPane.setVgap(6);
+            inputGridPane.getChildren().addAll(error);
+
+            final Pane rootGroup = new VBox(12);
+            rootGroup.getChildren().addAll(inputGridPane);
+            rootGroup.setPadding(new Insets(17, 17, 17, 17));
+            errorStage.setTitle("Attention");
+            errorStage.getIcons().add(new Image("file:icona.png"));
+            errorStage.setScene(new Scene(rootGroup));
+            errorStage.show();
+        }
+
+    }
+
 }
