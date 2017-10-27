@@ -685,7 +685,7 @@ public class Controller implements Initializable {
 
 //    Browse button to choose destination directory
 
-  public void browseDestination() {
+    public void browseDestination() {
         System.out.println("Choosing destination folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose the destination folder");
