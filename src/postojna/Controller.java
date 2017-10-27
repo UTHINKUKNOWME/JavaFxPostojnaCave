@@ -6,17 +6,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sun.font.GlyphLayout;
 
 import java.io.*;
 import java.net.URL;
@@ -601,7 +598,7 @@ public class Controller implements Initializable{
     private ComboBox<Integer> maxFilesChooser;
 
     @FXML
-    private ComboBox<String> pixelChooser;
+    private ComboBox<String> formatChooser;
 
     @FXML
     private Label sourceLabel;
@@ -618,8 +615,8 @@ public class Controller implements Initializable{
         intervalChooser.getSelectionModel().selectFirst();
         maxFilesChooser.getItems().addAll(10, 30, 50);
         maxFilesChooser.getSelectionModel().selectFirst();
-        pixelChooser.getItems().addAll("13x18", "8x10", "10x12", "10x15", "11x14", "12x16");
-        pixelChooser.getSelectionModel().selectFirst();
+        formatChooser.getItems().addAll("13x18", "8x10", "10x12", "10x15", "11x14", "12x16");
+        formatChooser.getSelectionModel().selectFirst();
     }
 
     @FXML
@@ -651,10 +648,10 @@ public class Controller implements Initializable{
     }
 
     public void startTheProgram(){
-        System.out.println("Start the program clicked !");
-        System.out.println(intervalChooser.getValue());
-        System.out.println(maxFilesChooser.getValue());
-        System.out.println(pixelChooser.getValue());
+        System.out.println("Program is started ...");
+        System.out.println("Interval : " + intervalChooser.getValue());
+        System.out.println("Max files in folder: " + maxFilesChooser.getValue());
+        System.out.println("Format :" + formatChooser.getValue());
         statusLabel.setText("Running...");
 
         String temp = "temp";
@@ -666,12 +663,12 @@ public class Controller implements Initializable{
         photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()),mainpath + temp,10), 0,15000);
         photoshopTimer.schedule(new emptyTempFolderTimer(), 0, 15000);
 
-        sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), pixelChooser.getValue()), 0, intervalChooser.getValue() * 1000);
+        sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), formatChooser.getValue()), 0, intervalChooser.getValue() * 1000);
 
     }
 
     public void browseSource(){
-        System.out.println("Browse source was clicked!");
+        System.out.println("Choosing source folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose the source folder");
         Stage dialog = new Stage(); // new stage
@@ -691,7 +688,7 @@ public class Controller implements Initializable{
     }
 
     public void browseDestination(){
-        System.out.println("Browse destination was clicked!");
+        System.out.println("Choosing destination folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose the destination folder");
         Stage dialog = new Stage(); // new stage
