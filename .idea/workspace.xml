@@ -495,7 +495,14 @@
       <option name="project" value="LOCAL" />
       <updated>1510248090832</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Last update before goin to the Final Testing tommorow.&#10;Added:&#10;- New button the help empty the OUTPUT folder for the remaining pictures which are under the MAX number of pictures in the folder.">
+      <created>1510248110792</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1510248110792</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
