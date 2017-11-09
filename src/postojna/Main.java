@@ -29,9 +29,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Postojna Cave");
+        primaryStage.setTitle("Postojnska jama");
         primaryStage.getIcons().add(new Image("file:icona.png"));
-        primaryStage.setScene(new Scene(root, 700, 250));
+        primaryStage.setScene(new Scene(root, 800, 250));
         primaryStage.show();
     }
 

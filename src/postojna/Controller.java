@@ -7,9 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -21,12 +23,15 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static java.nio.file.StandardCopyOption.*;
 
 public class Controller implements Initializable {
 
@@ -34,6 +39,12 @@ public class Controller implements Initializable {
     File sourceFolder;
 
     final static String mainpath = "C:\\Users\\Antonio\\Desktop\\";
+//    final static String networkDestionationTest = "\\\\Desktop-fg4h5f3\\DESTINATION";
+
+
+
+    String temp = "temp";
+    String output = "OUTPUT FOLDER DROP";
 
 
     //    Copy file from @source to @dest
@@ -48,9 +59,9 @@ public class Controller implements Initializable {
         }
     }
 
-    //    Create files condition.txt and end.txt for the printing machine
-//
-    private static void createPrintConditions(File f, String pix) {
+//        Create files condition.txt and end.txt for the printing machine
+
+    private static void createPrintConditions(File f, String pix, String folderName) {
 
         File[] listOfFiles = f.listFiles();
         FileWriter fw = null;
@@ -59,9 +70,11 @@ public class Controller implements Initializable {
 
 
         boolean allreadyConditionFile = false;
+        System.out.println(folderName);
 
         for (File file : listOfFiles) {
-            if (file.isDirectory()) {
+
+            if (file.isDirectory() && file.getName().equals(folderName)) {
 
                 File[] pictures = file.listFiles();
 
@@ -80,7 +93,7 @@ public class Controller implements Initializable {
                     printWriter.println("[ImageList]");
                     int picCounter = 0;
                     for (File picture : pictures) {
-                        if (picture.getName().endsWith("jpg")) {
+                        if (picture.getName().endsWith(".jpg") || picture.getName().endsWith(".JPG")) {
                             picCounter++;
                         }
                     }
@@ -90,14 +103,14 @@ public class Controller implements Initializable {
 //                        File[] pictures = file1.listFiles();
                     int counter = 1;
                     for (File picture : pictures) {
-                        if (picture.getName().endsWith("jpg")) {
+                        if (picture.getName().endsWith(".jpg") || picture.getName().endsWith(".JPG")) {
                             printWriter.println(counter + "=" + picture.getName());
                             counter++;
                         }
                     }
 
                     for (File picture : pictures) {
-                        if (picture.getName().endsWith("jpg")) {
+                        if (picture.getName().endsWith(".jpg") || picture.getName().endsWith(".JPG")) {
                             printWriter.println("[" + picture.getName() + "]");
                             printWriter.println("SizeName=" + pix);
                             printWriter.println("PrintCnt=1");
@@ -137,6 +150,11 @@ public class Controller implements Initializable {
         }
     }
 
+
+
+
+
+
     //    Check on  preset interval  if there are @max files allready in @srcFile to
 //    move then into the @destFile, using the @pix to determine the format which will be
 //    used in the .txt files required for the printing machine
@@ -150,6 +168,9 @@ public class Controller implements Initializable {
         int MAX_FILES = max;
         File[] listOfFiles = srcFile.listFiles();
         boolean allreadyLogFile = false;
+
+        String folderName = null;
+
         PrintWriter printWriter = null;
         BufferedWriter bw = null;
         FileWriter fw = null;
@@ -200,6 +221,7 @@ public class Controller implements Initializable {
                 for (int i = start; i < listOfFiles.length; i++) {
 //                boolean firstTime = true;
                     String dat = destFile + "/" + folderTimeStamp;
+                    folderName = folderTimeStamp;
 //                    String dat = destFile + "/" + folderTimeStamp + "-" + counter;
 //                System.out.println(dat);
                     File dir = new File(dat);
@@ -207,80 +229,83 @@ public class Controller implements Initializable {
                     while (k < MAX_FILES) {
                         int c = 0;
                         if (listOfFiles[i].isFile() && (listOfFiles[i].getName().endsWith(".jpg") || listOfFiles[i].getName().endsWith(".JPG"))) {
+//                                Check if the picture is called PRINT.jpg and PRINT.JPG
+                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG"))) && (!listOfFiles[i].getName().equals("PRINT.jpg"))) {
 
-                            if ((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG"))) {
-                                makeConditions = true;
-                                while (flag) {
-                                    if (!dir.exists()) {
-                                        dir.mkdir();
 
-                                        printWriter.print("New folder created : " + folderTimeStamp + "folderNum" + counter);
-                                        printWriter.println();
-                                        flag = false;
-                                    } else if (dir.listFiles().length < MAX_FILES) {
-                                        int razlika = MAX_FILES - dir.listFiles().length;
+                                     makeConditions = true;
+                                    while (flag) {
+                                        if (!dir.exists()) {
+                                            dir.mkdir();
 
-                                        flag = false;
-                                        while (c < razlika) {
+                                            printWriter.print("New folder created : " + folderTimeStamp + "folderNum" + counter);
+                                            printWriter.println();
+                                            flag = false;
+                                        } else if (dir.listFiles().length < MAX_FILES) {
+                                            int razlika = MAX_FILES - dir.listFiles().length;
+
+                                            flag = false;
+                                            while (c < razlika) {
 //                                        if (listOfFiles[i].isFile() && listOfFiles[i].getName().endsWith(".jpg")) {
-                                            if (!listOfFiles[i].getName().endsWith("DONE.jpg") || !listOfFiles[i].getName().endsWith("DONE.JPG")) {
+                                                if (!listOfFiles[i].getName().endsWith("DONE.jpg") || !listOfFiles[i].getName().endsWith("DONE.JPG")) {
 //                                            System.out.println("File being moved : " + listOfFiles[i].getName());
-                                                printWriter.print("Picture being moved : " + listOfFiles[i].getName());
-                                                printWriter.println();
-                                                howManyUntilBreak++;
+                                                    printWriter.print("Picture being moved : " + listOfFiles[i].getName());
+                                                    printWriter.println();
+                                                    howManyUntilBreak++;
 //                                            Write done on every source pic
-                                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
+                                                    File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
 //                                            Write done on every pic
-                                                if (listOfFiles[i].getName().endsWith(".jpg")) {
-                                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
-                                                }
+                                                    if (listOfFiles[i].getName().endsWith(".jpg")) {
+                                                        newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
+                                                    }
 
-                                                copyFileUsingStream(listOfFiles[i], newFile);
+                                                    copyFileUsingStream(listOfFiles[i], newFile);
 //                                            ================================================
 
-                                                String path = dir + "\\" + listOfFiles[i].getName();
+                                                    String path = dir + "\\" + listOfFiles[i].getName();
 
-                                                listOfFiles[i].renameTo(new File(path));
-                                                c++;
-                                                i++;
-                                            } else {
+                                                    listOfFiles[i].renameTo(new File(path));
+                                                    c++;
+                                                    i++;
+                                                } else {
 
-                                                i++;
-                                            }
+                                                    i++;
+                                                }
 //                                        }
-                                        }
+                                            }
 //                                i = start;
 //                                flag1 = false;
-                                    } else {
-                                        counter++;
+                                        } else {
+                                            counter++;
 //                                        dat = destFile + "/" + folderTimeStamp + "-" + counter;
-                                        dat = destFile + "/" + folderTimeStamp;
+                                            dat = destFile + "/" + folderTimeStamp;
 //                                    System.out.println("--=-=-=-=-=-==-");
 //                                    System.out.println(dat);
-                                        dir = new File(dat);
+                                            dir = new File(dat);
 //                                    System.out.println(dat);
+                                        }
+
+                                    }
+                                    if (c > 0) {
+                                        break;
                                     }
 
-                                }
-                                if (c > 0) {
-                                    break;
-                                }
 
-
-                                printWriter.println("File being moved : " + listOfFiles[i].getName());
-                                howManyUntilBreak++;
-                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
+                                    printWriter.println("File being moved : " + listOfFiles[i].getName());
+                                    howManyUntilBreak++;
+                                    File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
 //                            Write done on every pic
-                                if (listOfFiles[i].getName().endsWith(".jpg")) {
-                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
-                                }
-                                copyFileUsingStream(listOfFiles[i], newFile);
+                                    if (listOfFiles[i].getName().endsWith(".jpg")) {
+                                        newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
+                                    }
+                                    copyFileUsingStream(listOfFiles[i], newFile);
 //                          ================================================
 //                            newFile.renameTo(new File(dir + "/" + newFile.getName()));
-                                String path1 = dir + "\\" + listOfFiles[i].getName();
-                                System.out.println("The path is : " + path1);
+                                    String path1 = dir + "\\" + listOfFiles[i].getName();
+                                    System.out.println("The path is : " + path1);
 
-                                listOfFiles[i].renameTo(new File(path1));
+
+                                    listOfFiles[i].renameTo(new File(path1));
 
 //                            if(firstTime) {
 //                                try {
@@ -294,11 +319,12 @@ public class Controller implements Initializable {
 //                                }
 //                            }
 
-                                k++;
-                                i++;
-                            } else {
-                                i++;
-                            }
+                                    k++;
+                                    i++;
+
+                                } else {
+                                    i++;
+                                }
 
                         } else {
 //                        if (i < listOfFiles.length) {
@@ -326,7 +352,7 @@ public class Controller implements Initializable {
 //            System.out.println(makeConditions);
             if (makeConditions) {
 //                System.out.println("We are in!");
-                createPrintConditions(new File(destFile), pix);
+                createPrintConditions(new File(destFile), pix, folderName);
             }
 
             try {
@@ -353,16 +379,154 @@ public class Controller implements Initializable {
 
     }
 
+
+    public void checkForNewPicClearOutput(File srcFile, String destFile, String pix){
+
+        String logFolderPath = mainpath + "logs";
+        File[] listOfFiles = srcFile.listFiles();
+        boolean allreadyLogFile = false;
+        String folderName = null;
+        PrintWriter printWriter = null;
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        boolean makeConditions = false;
+        String logTimeStap = new SimpleDateFormat("MM.dd.yyyy").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+        String folderTimeStamp = new SimpleDateFormat("MMddHHmmss").format(Calendar.getInstance().getTime());
+
+        try {
+
+            File progFile = new File(logFolderPath);
+            File[] listOfFiles1 = progFile.listFiles();
+            for (int i = 0; i < listOfFiles1.length; i++) {
+                if (listOfFiles1[i].isFile()) {
+                    if (listOfFiles1[i].getName().equals(logTimeStap + "-log.txt")) {
+                        allreadyLogFile = true;
+                    }
+                }
+            }
+
+            File log = new File(logFolderPath + "/" + logTimeStap + "-log.txt");
+            if (allreadyLogFile) {
+
+                fw = new FileWriter(log, true);
+                bw = new BufferedWriter(fw);
+                printWriter = new PrintWriter(bw);
+
+            } else {
+                fw = new FileWriter(log);
+                bw = new BufferedWriter(fw);
+                printWriter = new PrintWriter(bw);
+            }
+
+            int counter = 1;
+            printWriter.println("-----------------------------------"); //35 crti
+            printWriter.print("Program started at " + timeStamp);
+            printWriter.println();
+            printWriter.println();
+
+            int start = 0;
+                for (int i = start; i < listOfFiles.length; i++) {
+//                boolean firstTime = true;
+                    String dat = destFile + "/" + folderTimeStamp;
+                    folderName = folderTimeStamp;
+                    File dir = new File(dat);
+
+
+                        if (listOfFiles[i].isFile() && (listOfFiles[i].getName().endsWith(".jpg") || listOfFiles[i].getName().endsWith(".JPG"))) {
+//                                Check if the picture is called PRINT.jpg and PRINT.JPG
+                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG"))) && (!listOfFiles[i].getName().equals("PRINT.jpg"))) {
+
+
+                                makeConditions = true;
+
+                                    if (!dir.exists()) {
+                                        dir.mkdir();
+
+                                        printWriter.print("New folder created : " + folderTimeStamp + "folderNum" + counter);
+                                        printWriter.println();
+                                    }  else {
+                                        counter++;
+
+                                        dat = destFile + "/" + folderTimeStamp;
+
+                                        dir = new File(dat);
+
+                                    }
+
+                                printWriter.println("File being moved : " + listOfFiles[i].getName());
+
+                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
+//                            Write done on every pic
+                                if (listOfFiles[i].getName().endsWith(".jpg")) {
+                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
+                                }
+                                copyFileUsingStream(listOfFiles[i], newFile);
+//                          ================================================
+//                            newFile.renameTo(new File(dir + "/" + newFile.getName()));
+                                String path1 = dir + "\\" + listOfFiles[i].getName();
+                                System.out.println("The path is : " + path1);
+
+
+                                listOfFiles[i].renameTo(new File(path1));
+
+
+                            }
+
+                        }
+
+//                    i = start;
+//                    counter++;
+
+                }
+
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+//            printWriter.println(e);
+        } finally {
+//            System.out.println(makeConditions);
+            if (makeConditions) {
+//                System.out.println("We are in!");
+                createPrintConditions(new File(destFile), pix, folderName);
+            }
+
+            try {
+                if (printWriter != null)
+                    printWriter.close();
+            } catch (Exception e) {
+                //exception handling left as an exercise for the reader
+            }
+            try {
+                if (bw != null)
+                    bw.close();
+            } catch (IOException e) {
+                //exception handling left as an exercise for the reader
+            }
+            try {
+                if (fw != null)
+                    fw.close();
+            } catch (IOException e) {
+                //exception handling left as an exercise for the reader
+            }
+        }
+
+
+    }
+
     //    Helper function to check if we reached the @max limit of DONE pictures in the folder
 //
     private static boolean checkIfThereAreMaxNew(File[] folder, int max) {
-        boolean out = false;
         int counter = 0;
 //        File[] listOfFiles = folder.listFiles();
         for (File file : folder) {
-
+//            ((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG")) && (!listOfFiles[i].equals("PRINT.jpg") || !listOfFiles[i].equals("PRINT.JPG")))
             if (file.isFile() && ((file.getName().endsWith(".jpg") && !file.getName().endsWith("DONE.jpg")) || (file.getName().endsWith(".JPG") && !file.getName().endsWith("DONE.JPG")))) {
-                counter++;
+                if(!file.getName().equals("PRINT.jpg") && !file.getName().equals("PRINT.JPG")) {
+                    System.out.println(file.getName());
+                    counter++;
+                }
             }
         }
         System.out.println("There are " + counter + " files.");
@@ -374,8 +538,12 @@ public class Controller implements Initializable {
 //
     private static void checkForNewPicFirst(File srcFile, String destFile, int max) {
 
-        int openedInPs = 0;
+//        int openedInPs = 0;
         int MAX_FILES = max;
+        boolean firstTime = true;
+
+        File tempDirectory = null;
+
         File[] listOfFiles = srcFile.listFiles();
         boolean makeConditions = false;
         String timeStamp = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -389,7 +557,6 @@ public class Controller implements Initializable {
             int k = 0;
             int start = 0;
             for (int i = start; i < listOfFiles.length; i++) {
-                boolean firstTime = true;
                 String dat = destFile + "/" + folderTimeStamp;
 //                String dat = destFile + "/" + folderTimeStamp + "-" + counter;
 //                System.out.println(dat);
@@ -421,14 +588,14 @@ public class Controller implements Initializable {
 //                                            Write done on every source pic
 
 
-                                            try {
-                                                System.out.println(listOfFiles[i].getCanonicalPath());
-                                                Runtime r = Runtime.getRuntime();
-                                                r.exec(mainpath + "OBDELAJ.exe" + " " + listOfFiles[i].getCanonicalPath());
-                                                openedInPs++;
-                                            } catch (IOException err) {
-                                                err.printStackTrace();
-                                            }
+//                                            try {
+//                                                System.out.println(listOfFiles[i].getCanonicalPath());
+//                                                Runtime r = Runtime.getRuntime();
+//                                                r.exec(mainpath + "OBDELAJ.exe" + " " + listOfFiles[i].getCanonicalPath());
+//                                                openedInPs++;
+//                                            } catch (IOException err) {
+//                                                err.printStackTrace();
+//                                            }
 
                                             File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
 //                            Write done on every pic
@@ -473,19 +640,7 @@ public class Controller implements Initializable {
                             System.out.println("The path is : " + path1);
 
                             listOfFiles[i].renameTo(new File(path1));
-
-                            if (firstTime) {
-                                try {
-                                    System.out.println(dir);
-                                    Runtime r = Runtime.getRuntime();
-                                    r.exec(mainpath + "OBDELAJ.exe" + " " + dir);
-                                    firstTime = false;
-                                    openedInPs++;
-                                } catch (IOException err) {
-                                    err.printStackTrace();
-
-                                }
-                            }
+                            tempDirectory = dir;
 
                             k++;
                             i++;
@@ -500,10 +655,10 @@ public class Controller implements Initializable {
                     }
 
                 }
-                System.out.println(openedInPs);
-                if (openedInPs == 1) {
-                    break;
-                }
+//                System.out.println(openedInPs);
+//                if (openedInPs == 1) {
+//                    break;
+//                }
                 i = start;
                 flag = true;
                 k = 0;
@@ -515,6 +670,21 @@ public class Controller implements Initializable {
         } catch (Exception e) {
 //       Prints ArrayOutOfBounds Exception between the intervals
 //            System.out.println(e);
+        } finally {
+            if (firstTime) {
+                try {
+                    if(tempDirectory != null) {
+//                    System.out.println(tempDirectory);
+                        Runtime r = Runtime.getRuntime();
+                        r.exec(mainpath + "OBDELAJ.exe" + " " + tempDirectory);
+                        firstTime = false;
+//                    openedInPs++;
+                    }
+                } catch (IOException err){
+                        err.printStackTrace();
+
+                }
+            }
         }
 
     }
@@ -615,6 +785,9 @@ public class Controller implements Initializable {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private ImageView runImage;
+
 //    Initialize the variable settings
 
     @Override
@@ -625,6 +798,7 @@ public class Controller implements Initializable {
         maxFilesChooser.getSelectionModel().selectFirst();
         formatChooser.getItems().addAll("13x18", "8x10", "10x12", "10x15", "11x14", "12x16");
         formatChooser.getSelectionModel().selectFirst();
+//        destLabel.setText(networkDestionationTest);
     }
 
 //   Handle File > Exit application
@@ -641,8 +815,8 @@ public class Controller implements Initializable {
         Stage about = new Stage();
         final GridPane inputGridPane = new GridPane();
 
-        Label version = new Label("Version 1.0.0");
-        Label copyright = new Label("All rights reserved. Angelis");
+        Label version = new Label("Verzija 1.0.0");
+        Label copyright = new Label("Vse pravice pridžane. Postojnska Jama");
 
 
         GridPane.setConstraints(version, 0, 0);
@@ -654,7 +828,7 @@ public class Controller implements Initializable {
         final Pane rootGroup = new VBox(12);
         rootGroup.getChildren().addAll(inputGridPane);
         rootGroup.setPadding(new Insets(12, 12, 12, 12));
-        about.setTitle("About");
+        about.setTitle("O programu");
         about.getIcons().add(new Image("file:icona.png"));
         about.setScene(new Scene(rootGroup));
         about.show();
@@ -666,7 +840,7 @@ public class Controller implements Initializable {
     public void browseSource() {
         System.out.println("Choosing source folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choose the source folder");
+        directoryChooser.setTitle("Izberite izvirno mapo");
         Stage dialog = new Stage(); // new stage
         dialog.initModality(Modality.APPLICATION_MODAL);
         // Defines a modal window that blocks events from being
@@ -679,16 +853,16 @@ public class Controller implements Initializable {
         } catch (Exception e) {
             System.out.println(e);
         }
-
-
     }
+
+
 
 //    Browse button to choose destination directory
 
     public void browseDestination() {
         System.out.println("Choosing destination folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choose the destination folder");
+        directoryChooser.setTitle("Izberite ciljno mapo");
         Stage dialog = new Stage(); // new stage
         dialog.initModality(Modality.APPLICATION_MODAL);
         // Defines a modal window that blocks events from being
@@ -702,6 +876,17 @@ public class Controller implements Initializable {
         }
     }
 
+    public void clearOutput(){
+
+        System.out.println("Clearing the output folder.");
+        if (!destLabel.getText().equals("Izberite ciljno mapo") && !sourceLabel.getText().equals("Izberite izvirno mapo")) {
+            checkForNewPicClearOutput(new File(mainpath + output), destLabel.getText(), formatChooser.getValue());
+        }else {
+            showErrorDialog();
+        }
+
+    }
+
 //    Method to start the program
 
     public void startTheProgram() {
@@ -709,43 +894,50 @@ public class Controller implements Initializable {
         System.out.println("Interval : " + intervalChooser.getValue());
         System.out.println("Max files in folder: " + maxFilesChooser.getValue());
         System.out.println("Format :" + formatChooser.getValue());
-        statusLabel.setText("Running...");
+        statusLabel.setText("V obdelovanju...");
+        File file = new File("file:run.png");
+        Image image = new Image("file:run.png");
+        runImage.setImage(image);
 
-        String temp = "temp";
-        String output = "OUTPUT FOLDER DROP";
+
 
         Timer photoshopTimer = new Timer();
         Timer sortFilesIntoDestFolderTImer = new Timer();
 
 
-        if (!destLabel.getText().equals("Choose destination folder") && !sourceLabel.getText().equals("Choose source folder")) {
-            photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()), mainpath + temp, 10), 0, 15000);
+        if (!destLabel.getText().equals("Izberite ciljno mapo") && !sourceLabel.getText().equals("Izberite izvirno mapo")) {
+            photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()), mainpath + temp, 10000), 0, 7000);
             photoshopTimer.schedule(new emptyTempFolderTimer(), 0, 15000);
+            runImage.setVisible(true);
 
             sortFilesIntoDestFolderTImer.schedule(new checkForNewPicsTimer(new File(mainpath + output), destLabel.getText(), maxFilesChooser.getValue(), formatChooser.getValue()), 0, intervalChooser.getValue() * 1000);
         } else {
 //            System.out.println("Somethings is null");
-            statusLabel.setText("Stopped");
-            Stage errorStage = new Stage();
-            final GridPane inputGridPane = new GridPane();
-
-            Label error = new Label("Please make sure u choose both source and destination folders!");
-            error.setFont(new Font("Arial", 18));
-
-            GridPane.setConstraints(error, 0, 0);
-            inputGridPane.setHgap(6);
-            inputGridPane.setVgap(6);
-            inputGridPane.getChildren().addAll(error);
-
-            final Pane rootGroup = new VBox(12);
-            rootGroup.getChildren().addAll(inputGridPane);
-            rootGroup.setPadding(new Insets(17, 17, 17, 17));
-            errorStage.setTitle("Attention");
-            errorStage.getIcons().add(new Image("file:icona.png"));
-            errorStage.setScene(new Scene(rootGroup));
-            errorStage.show();
+            statusLabel.setText("Prekinjeno");
+            showErrorDialog();
         }
 
+    }
+
+    public void showErrorDialog(){
+        Stage errorStage = new Stage();
+        final GridPane inputGridPane = new GridPane();
+
+        Label error = new Label("Prosimo, izberete izvirno in ciljno mapo!");
+        error.setFont(new Font("Arial", 18));
+
+        GridPane.setConstraints(error, 0, 0);
+        inputGridPane.setHgap(6);
+        inputGridPane.setVgap(6);
+        inputGridPane.getChildren().addAll(error);
+
+        final Pane rootGroup = new VBox(12);
+        rootGroup.getChildren().addAll(inputGridPane);
+        rootGroup.setPadding(new Insets(17, 17, 17, 17));
+        errorStage.setTitle("Pozor");
+        errorStage.getIcons().add(new Image("file:icona.png"));
+        errorStage.setScene(new Scene(rootGroup));
+        errorStage.show();
     }
 
 }
