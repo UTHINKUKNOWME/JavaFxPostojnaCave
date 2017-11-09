@@ -230,7 +230,7 @@ public class Controller implements Initializable {
                         int c = 0;
                         if (listOfFiles[i].isFile() && (listOfFiles[i].getName().endsWith(".jpg") || listOfFiles[i].getName().endsWith(".JPG"))) {
 //                                Check if the picture is called PRINT.jpg and PRINT.JPG
-                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG"))) && (!listOfFiles[i].getName().equals("PRINT.jpg"))) {
+                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg") && !listOfFiles[i].getName().equals("PRINT.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG") && !listOfFiles[i].getName().equals("PRINT.JPG")))) {
 
 
                                      makeConditions = true;
@@ -435,7 +435,7 @@ public class Controller implements Initializable {
 
                         if (listOfFiles[i].isFile() && (listOfFiles[i].getName().endsWith(".jpg") || listOfFiles[i].getName().endsWith(".JPG"))) {
 //                                Check if the picture is called PRINT.jpg and PRINT.JPG
-                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG"))) && (!listOfFiles[i].getName().equals("PRINT.jpg"))) {
+                            if (((listOfFiles[i].getName().endsWith(".jpg") && !listOfFiles[i].getName().endsWith("DONE.jpg") && !listOfFiles[i].getName().equals("PRINT.jpg")) || (listOfFiles[i].getName().endsWith(".JPG") && !listOfFiles[i].getName().endsWith("DONE.JPG") && !listOfFiles[i].getName().equals("PRINT.JPG")))) {
 
 
                                 makeConditions = true;
@@ -456,12 +456,12 @@ public class Controller implements Initializable {
 
                                 printWriter.println("File being moved : " + listOfFiles[i].getName());
 
-                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
-//                            Write done on every pic
-                                if (listOfFiles[i].getName().endsWith(".jpg")) {
-                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
-                                }
-                                copyFileUsingStream(listOfFiles[i], newFile);
+//                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
+////                            Write done on every pic
+//                                if (listOfFiles[i].getName().endsWith(".jpg")) {
+//                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
+//                                }
+//                                copyFileUsingStream(listOfFiles[i], newFile);
 //                          ================================================
 //                            newFile.renameTo(new File(dir + "/" + newFile.getName()));
                                 String path1 = dir + "\\" + listOfFiles[i].getName();
