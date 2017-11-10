@@ -112,7 +112,7 @@
             </VBox>
             <VBox alignment="CENTER" spacing="10.0">
                <children>
-                  <Label fx:id="destLabel" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="5.0" text="Izberite ciljno mapo">
+                  <Label fx:id="destLabel" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="5.0" text="\\\FEII-FRONTEND\C8Spool">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -126,7 +126,7 @@
             </VBox>
             <VBox alignment="CENTER" layoutX="192.0" layoutY="10.0" spacing="10.0">
                <children>
-                  <Label fx:id="sourceLabel1" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="5.0" text="Izprazni OUTPUT">
+                  <Label fx:id="sourceLabel1" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="5.0" text="Obdelaj ostale slike v OUTPUT mapo">
                      <font>
                         <Font size="15.0" />
                      </font>

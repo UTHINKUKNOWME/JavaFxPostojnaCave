@@ -38,7 +38,7 @@ public class Controller implements Initializable {
     File destinationFolder;
     File sourceFolder;
 
-    final static String mainpath = "C:\\Users\\Antonio\\Desktop\\";
+    final static String mainpath = "C:\\Users\\Uporabnik\\Desktop\\";
 //    final static String networkDestionationTest = "\\\\Desktop-fg4h5f3\\DESTINATION";
 
 
@@ -307,18 +307,6 @@ public class Controller implements Initializable {
 
                                     listOfFiles[i].renameTo(new File(path1));
 
-//                            if(firstTime) {
-//                                try {
-//                                    System.out.println(dir);
-//                                    Runtime r = Runtime.getRuntime();
-//                                    r.exec("C:\\Users\\Antonio\\Desktop\\OBDELAJ.exe" + " " + dir);
-//                                    firstTime = false;
-//                                } catch (IOException err) {
-//                                    err.printStackTrace();
-//
-//                                }
-//                            }
-
                                     k++;
                                     i++;
 
@@ -375,11 +363,10 @@ public class Controller implements Initializable {
             }
         }
 
-//        System.out.println("Pictures renamed and moved: " + howManyPrint);
-
     }
 
-
+    //  Takes care of the remaining photos in the OUTPUT folder
+    //
     public void checkForNewPicClearOutput(File srcFile, String destFile, String pix){
 
         String logFolderPath = mainpath + "logs";
@@ -456,12 +443,12 @@ public class Controller implements Initializable {
 
                                 printWriter.println("File being moved : " + listOfFiles[i].getName());
 
-//                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
-////                            Write done on every pic
-//                                if (listOfFiles[i].getName().endsWith(".jpg")) {
-//                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
-//                                }
-//                                copyFileUsingStream(listOfFiles[i], newFile);
+                                File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
+//                            Write done on every pic
+                                if (listOfFiles[i].getName().endsWith(".jpg")) {
+                                    newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".jpg", "DONE.jpg"));
+                                }
+                                copyFileUsingStream(listOfFiles[i], newFile);
 //                          ================================================
 //                            newFile.renameTo(new File(dir + "/" + newFile.getName()));
                                 String path1 = dir + "\\" + listOfFiles[i].getName();
@@ -586,16 +573,6 @@ public class Controller implements Initializable {
 //                                            printWriter.print("Picture being moved : " + listOfFiles[i].getName());
 //                                            printWriter.println();
 //                                            Write done on every source pic
-
-
-//                                            try {
-//                                                System.out.println(listOfFiles[i].getCanonicalPath());
-//                                                Runtime r = Runtime.getRuntime();
-//                                                r.exec(mainpath + "OBDELAJ.exe" + " " + listOfFiles[i].getCanonicalPath());
-//                                                openedInPs++;
-//                                            } catch (IOException err) {
-//                                                err.printStackTrace();
-//                                            }
 
                                             File newFile = new File(srcFile + "\\" + listOfFiles[i].getName().replace(".JPG", "DONE.JPG"));
 //                            Write done on every pic
@@ -794,7 +771,7 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         intervalChooser.getItems().addAll(15, 20, 30, 50, 60);
         intervalChooser.getSelectionModel().selectFirst();
-        maxFilesChooser.getItems().addAll(10, 30, 50);
+        maxFilesChooser.getItems().addAll(50, 30, 10);
         maxFilesChooser.getSelectionModel().selectFirst();
         formatChooser.getItems().addAll("13x18", "8x10", "10x12", "10x15", "11x14", "12x16");
         formatChooser.getSelectionModel().selectFirst();
@@ -862,9 +839,11 @@ public class Controller implements Initializable {
     public void browseDestination() {
         System.out.println("Choosing destination folder ...");
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Izberite ciljno mapo");
+//        directoryChooser.setTitle("Izberite ciljno mapo");
+        directoryChooser.setTitle("\\\\FEII-FRONTEND\\C8Spool");
         Stage dialog = new Stage(); // new stage
         dialog.initModality(Modality.APPLICATION_MODAL);
+//        System.out.println(directoryChooser.getTitle());
         // Defines a modal window that blocks events from being
         // delivered to any other application window.
         destinationFolder = directoryChooser.showDialog(dialog);
@@ -906,7 +885,7 @@ public class Controller implements Initializable {
 
 
         if (!destLabel.getText().equals("Izberite ciljno mapo") && !sourceLabel.getText().equals("Izberite izvirno mapo")) {
-            photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()), mainpath + temp, 10000), 0, 7000);
+            photoshopTimer.schedule(new checkForNewPicsFirstTimer(new File(sourceLabel.getText()), mainpath + temp, 10000), 0, 60000);
             photoshopTimer.schedule(new emptyTempFolderTimer(), 0, 15000);
             runImage.setVisible(true);
 

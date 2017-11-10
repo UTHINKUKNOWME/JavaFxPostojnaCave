@@ -11,7 +11,7 @@ import java.io.File;
 
 public class Main extends Application {
 
-    String mainpath = "C:\\Users\\Antonio\\Desktop\\";
+    String mainpath = "C:\\Users\\Uporabnik\\Desktop\\";
 
     public static void emptyFolderFull(File folder) {
         for (File file : folder.listFiles()) {
